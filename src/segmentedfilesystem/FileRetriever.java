@@ -1,12 +1,21 @@
 package segmentedfilesystem;
-
 import java.net.*;
+import java.io.*;
 
 public class FileRetriever {
 
-	public FileRetriever(String server, int port) {
-        // Save the server and port for use in `downloadFiles()`
-        //...
+        InetAddress netAddress;
+        int portNumber;
+
+        // This constructor should take the server name and port number
+	public FileRetriever(String netAddress, int portNumber) {
+        
+        try {
+                this.netAddress = InetAddress.getByName(netAddress);
+                this.portNumber = portNumber;
+        } catch (Exception e) {
+            System.out.println("Error: " + e);
+        }
 	}
 
 	public void downloadFiles() {
@@ -23,50 +32,38 @@ public class FileRetriever {
         // call for that, but there are a bunch of possible
         // ways.
 
-	}
+        byte[] buf_Sed = new byte[256];
+        byte[] buf_Rec = new byte[1028];
 
-        public static void sendUDP(String host, int port, byte[] message) {
-        // This method should send a UDP packet to the given
-        // host and port, containing the given message.
-
-                try {
-                        // Create a new DatagramSocket, which will be used to send the data.
-                        DatagramSocket socket = new DatagramSocket();
-                        InetAddress address = InetAddress.getByName(host);
-                        DatagramPacket packet = new DatagramPacket(message, message.length, address, port);
-                        
-                        // Send the packet
-                        socket.send(packet);
-                        socket.close();
-                        
-                } catch (Exception e) {
-                        System.err.println(e);
-                }
+        try {
+        DatagramSocket datagramSocket = new DatagramSocket();
+        DatagramPacket datagramPacket = new DatagramPacket(buf_Sed, buf_Sed.length, netAddress, portNumber);
+        
+        datagramSocket.send(datagramPacket);
+        PackageManager packageManager = new PackageManager();
+        
+        while (packageManager.packets.size() < PackageManager.totalPackets) {
+                DatagramPacket packet = new DatagramPacket(buf_Rec, buf_Rec.length);
+                datagramSocket.receive(packet);
+                packageManager.packetIns(packet);
         }
 
-        public static void receiveUDP(int port) {
-        // This method should receive a UDP packet from the given
-        // port, and return the data from that packet.
+        datagramSocket.close();
+        packageManager.fileOrganizer();
+        packageManager.packetOrganizer();
 
-                try {
-                        // Create a new DatagramSocket, which will be used to receive the data.
-                        DatagramSocket socket = new DatagramSocket(port);
-                        byte[] buffer = new byte[1024];
-                        DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
-                        
-                        while (true) {
-                                // Receive the packet
-                                socket.receive(packet);
-                                byte[] data = packet.getData();
-                                socket.close();
-                                packet = new DatagramPacket(buffer, buffer.length);
-                        }
-                        
-                } catch (Exception e) {
-                        System.err.println(e);
+        for (int i = 0; i < packageManager.packetOrg.size(); ++i) {
+                File newFile = new File(new String(packageManager.packetOrg.get(i).get(0).data, 0, packageManager.packetOrg.get(i).get(0).data.length));
+                
+                System.setOut(new PrintStream(newFile));
+                for (int j = 1; j < packageManager.packetOrg.get(i).size(); j++) {
+                        System.out.write(packageManager.packetOrg.get(i).get(j).data);
+                        System.out.flush();
                 }
+                System.out.flush();
         }
-
-
-
+        } catch (Exception e) {
+            System.out.println("Error: " + e);
+        }
+        }
 }
