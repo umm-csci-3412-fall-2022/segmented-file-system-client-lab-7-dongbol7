@@ -76,7 +76,7 @@ public class FileRetriever {
                 System.out.flush();
         }
         } catch (Exception e) {
-            System.out.println("Error: " + e);
+            System.err.println("Error: " + e);
         }
         }
 }
