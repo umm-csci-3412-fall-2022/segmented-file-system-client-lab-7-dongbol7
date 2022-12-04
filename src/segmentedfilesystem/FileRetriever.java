@@ -1,6 +1,8 @@
 package segmentedfilesystem;
+
 import java.net.*;
 import java.io.*;
+import java.util.*;
 
 public class FileRetriever {
 
@@ -13,6 +15,9 @@ public class FileRetriever {
         try {
                 this.netAddress = InetAddress.getByName(netAddress);
                 this.portNumber = portNumber;
+                System.out.println("Server Name : " + netAddress);
+                System.out.println("Port Number : " + portNumber);
+
         } catch (Exception e) {
             System.out.println("Error: " + e);
         }
@@ -42,10 +47,11 @@ public class FileRetriever {
         datagramSocket.send(datagramPacket);
         PackageManager packageManager = new PackageManager();
         
-        while (packageManager.packets.size() < PackageManager.totalPackets) {
-                DatagramPacket packet = new DatagramPacket(buf_Rec, buf_Rec.length);
-                datagramSocket.receive(packet);
-                packageManager.packetIns(packet);
+        while (PackageManager.totalPackets == 0 || packageManager.packets.size() < PackageManager.totalPackets) {
+                datagramPacket = new DatagramPacket(buf_Rec, buf_Rec.length);
+                datagramSocket.receive(datagramPacket);
+                packageManager.packetIns(datagramPacket);
+                buf_Rec = new byte[1028];
         }
 
         datagramSocket.close();
@@ -53,7 +59,11 @@ public class FileRetriever {
         packageManager.packetOrganizer();
 
         for (int i = 0; i < packageManager.packetOrg.size(); ++i) {
-                File newFile = new File(new String(packageManager.packetOrg.get(i).get(0).data, 0, packageManager.packetOrg.get(i).get(0).data.length));
+
+                ArrayList<packet> packetList = packageManager.packetOrg.get(i);
+                String fileName = packetList.get(0).fileName;
+                
+                File newFile = new File(fileName);
                 
                 System.setOut(new PrintStream(newFile));
                 for (int j = 1; j < packageManager.packetOrg.get(i).size(); j++) {
