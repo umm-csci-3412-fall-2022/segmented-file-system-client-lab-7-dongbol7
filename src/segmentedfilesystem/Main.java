@@ -1,5 +1,6 @@
 package segmentedfilesystem;
 
+
 public class Main {
     
     // If there's one command line argument, it is assumed to
@@ -7,7 +8,6 @@ public class Main {
     // to be the port to use.
 
     public static void main(String[] args) {
-        
         String server = "localhost";
         // CHANGE THIS DEFAULT PORT TO THE PORT NUMBER PROVIDED
         // BY THE INSTRUCTOR.
@@ -21,7 +21,14 @@ public class Main {
         }
 
         FileRetriever fileRetriever = new FileRetriever(server, port);
-        fileRetriever.downloadFiles();
+        
+        // This method should do all the heavy lifting.
+        try {
+            fileRetriever.downloadFiles();
+        } catch (Exception e) {
+            System.err.println(e);
+        }
         
     }
+
 }
