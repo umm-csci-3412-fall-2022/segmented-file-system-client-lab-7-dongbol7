@@ -21,9 +21,6 @@ public class FileRetriever {
         try {
                 this.netAddress = InetAddress.getByName(netAddress);
                 this.portNumber = portNumber;
-                System.out.println("Server Name : " + netAddress);
-                System.out.println("Port Number : " + portNumber);
-
         } catch (Exception e) {
             System.out.println("Error: " + e);
         }
