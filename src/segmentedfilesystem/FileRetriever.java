@@ -8,6 +8,12 @@ public class FileRetriever {
 
         InetAddress netAddress;
         int portNumber;
+        
+        byte[] buf_Sed = new byte[256];
+        byte[] buf_Rec = new byte[1028];
+        
+        DatagramSocket datagramSocket = null;
+        DatagramPacket datagramPacket;
 
         // This constructor should take the server name and port number
 	public FileRetriever(String netAddress, int portNumber) {
@@ -37,9 +43,6 @@ public class FileRetriever {
         // call for that, but there are a bunch of possible
         // ways.
 
-        byte[] buf_Sed = new byte[256];
-        byte[] buf_Rec = new byte[1028];
-
         try {
         DatagramSocket datagramSocket = new DatagramSocket();
         DatagramPacket datagramPacket = new DatagramPacket(buf_Sed, buf_Sed.length, netAddress, portNumber);
@@ -58,7 +61,7 @@ public class FileRetriever {
         packageManager.fileOrganizer();
         packageManager.packetOrganizer();
 
-        for (int i = 0; i < packageManager.packetOrg.size(); ++i) {
+        for (int i = 0; i < packageManager.packetOrg.size(); i++) {
 
                 ArrayList<packet> packetList = packageManager.packetOrg.get(i);
                 String fileName = packetList.get(0).fileName;
