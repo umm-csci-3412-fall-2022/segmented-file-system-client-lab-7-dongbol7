@@ -13,11 +13,11 @@ public class PackageManager {
     // This method should take a packet and add it to the list of packets
     public void packetIns(DatagramPacket packet) {
         int dataLength = packet.getLength();
-        byte[] packetData = packet.getData();
-        if ((1 & packetData[0]) == 1) {
-            packets.add(new packetData(packetData, dataLength));
+        byte[] packetDatas = packet.getData();
+        if ((1 & packetDatas[0]) == 1) {
+            packets.add(new packetData(packetDatas, dataLength));
         } else {
-            packets.add(new packetHeader(packetData, dataLength));
+            packets.add(new packetHeader(packetDatas, dataLength));
         }
     }
     
@@ -71,8 +71,9 @@ class packetHeader extends packet {
 // This constructor makes a packet with data
 class packetData extends packet {
     packetData(byte[] packet, int dataLength) {
-        data = new byte[dataLength - 4];
         int index = 0;
+        data = new byte[dataLength - 4];
+
         for (int i = 4; i < dataLength; ++i) {
             data[index++] = packet[i];
         }
