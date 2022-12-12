@@ -14,7 +14,7 @@ public class PackageManager {
     public void packetIns(DatagramPacket packet) {
         int dataLength = packet.getLength();
         byte[] packetData = packet.getData();
-        if ((1 & packet.getData()[0]) == 1) {
+        if ((1 & packetData[0]) == 1) {
             packets.add(new packetData(packetData, dataLength));
         } else {
             packets.add(new packetHeader(packetData, dataLength));

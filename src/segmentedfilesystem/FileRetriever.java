@@ -22,7 +22,7 @@ public class FileRetriever {
                 this.netAddress = InetAddress.getByName(netAddress);
                 this.portNumber = portNumber;
         } catch (Exception e) {
-            System.out.println("Error: " + e);
+            System.err.println("Error: " + e);
         }
 	}
 
