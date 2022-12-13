@@ -40,6 +40,7 @@ public class FileRetriever {
         // call for that, but there are a bunch of possible
         // ways.
 
+        // This loop will run until all packets have been received
         try {
         DatagramSocket datagramSocket = new DatagramSocket();
         DatagramPacket datagramPacket = new DatagramPacket(buf_Sed, buf_Sed.length, netAddress, portNumber);
@@ -47,6 +48,7 @@ public class FileRetriever {
         datagramSocket.send(datagramPacket);
         PackageManager packageManager = new PackageManager();
         
+        // This loop will run until all packets have been received
         while (PackageManager.totalPackets == 0 || packageManager.packets.size() < PackageManager.totalPackets) {
                 datagramPacket = new DatagramPacket(buf_Rec, buf_Rec.length);
                 datagramSocket.receive(datagramPacket);
@@ -58,6 +60,7 @@ public class FileRetriever {
         packageManager.fileOrganizer();
         packageManager.packetOrganizer();
 
+        // This loop will run until all files have been written to
         for (int i = 0; i < packageManager.packetOrg.size(); i++) {
 
                 ArrayList<packet> packetList = packageManager.packetOrg.get(i);
@@ -72,8 +75,10 @@ public class FileRetriever {
                 }
                 System.out.flush();
         }
+
         } catch (Exception e) {
             System.err.println("Error: " + e);
         }
+
         }
 }

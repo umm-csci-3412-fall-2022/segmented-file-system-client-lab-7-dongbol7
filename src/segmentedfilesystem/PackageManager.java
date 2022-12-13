@@ -14,6 +14,7 @@ public class PackageManager {
     public void packetIns(DatagramPacket packet) {
         int dataLength = packet.getLength();
         byte[] packetDatas = packet.getData();
+
         if ((1 & packetDatas[0]) == 1) {
             packets.add(new packetData(packetDatas, dataLength));
         } else {
@@ -27,9 +28,11 @@ public class PackageManager {
     public void fileOrganizer(){
         for (packet pack : packets){
             for (int i = 0; i < 256; i++) {
+
                 if (packetOrg.size() > i && packetOrg.get(i).get(0).fileID == pack.fileID){
                     packetOrg.get(i).add(pack);
                     break;
+                    
                 } else if (packetOrg.size() <= i) {
                     packetOrg.add(new ArrayList<packet>());
                     packetOrg.get(i).add(pack);
