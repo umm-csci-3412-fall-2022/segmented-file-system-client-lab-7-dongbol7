@@ -58,11 +58,13 @@ class packet {
 // This constructor creates a packet object and adds it to the list of packets
 class packetHeader extends packet {
     packetHeader(byte[] packet, int dataLength) {
-        data = new byte[dataLength - 2];
         int index = 0;
+        data = new byte[dataLength - 2];
+        
         for (int i = 2; i < dataLength; ++i) {
             data[index++] = packet[i];
         }
+        
         fileID = packet[1];
         fileName = (new String(data, 0, data.length)).replaceAll("\0", "");
     }
@@ -82,7 +84,7 @@ class packetData extends packet {
         packetNumber = 256 * Byte.toUnsignedInt(packet[2]) + Byte.toUnsignedInt(packet[3]);
 
         if ((3 & packet[0]) == 3) {
-            PackageManager.tempPackets = packetNumber + 2;
+            PackageManager.tempPackets += packetNumber + 2;
             ++PackageManager.endNum;
             if (PackageManager.endNum == 3) {
                 PackageManager.totalPackets = PackageManager.tempPackets;
